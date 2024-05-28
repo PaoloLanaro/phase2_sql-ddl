@@ -42,8 +42,80 @@ CREATE TABLE IF NOT EXISTS article
   id INT PRIMARY KEY,
   content VARCHAR(15000),
   country_id INT,
-  sentiment_score FLOAT,
   title VARCHAR(255),
   publication_date DATETIME,
   FOREIGN KEY (country_id) REFERENCES country (id)
+);
+
+DROP TABLE IF EXISTS filter;
+CREATE TABLE IF NOT EXISTS filter
+(
+  id INT PRIMARY KEY,
+  user_id INT,
+  region VARCHAR(255),   # unsure how to make this a multi-value
+  subjects VARCHAR(255), # unsure how to make this a multi-value
+  # time frame attribute,  unsure if this should be two DATETIME values?
+  FOREIGN KEY (user_id) REFERENCES users (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+);
+
+DROP TABLE IF EXISTS sentiment_analysis
+CREATE TABLE IF NOT EXISTS sentiment_analysis
+(
+  id INT PRIMARY KEY,
+  article_id INT,
+  sentiment_score FLOAT,
+  analysis_date DATETIME,
+  FOREIGN KEY (article_id) REFERENCES article (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+);
+
+DROP TABLE IF EXISTS news_source;
+CREATE TABLE IF NOT EXISTS news_source
+(
+  id INT PRIMARY KEY,
+  name VARCHAR(255), 
+  political_leaning VARCHAR(255),
+  article_id INT,
+  FOREIGN KEY (article_id) REFERENCES article (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+);
+
+DROP TABLE IF EXISTS likes;
+CREATE TABLE IF NOT EXISTS likes
+(
+  id INT PRIMARY KEY,
+  user_id INT,
+  like_date DATETIME,
+  article_id INT,
+  FOREIGN KEY (user_id) REFERENCES users (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+);
+
+DROP TABLE IF EXISTS saves;
+CREATE TABLE IF NOT EXISTS saved
+(
+  id INT PRIMARY KEY,
+  article_id INT,
+  user_id INT,
+  save_date DATETIME,
+  FOREIGN KEY (user_id) REFERENCES users (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
+);
+
+DROP TABLE IF EXISTS shares;
+CREATE TABLE IF NOT EXISTS shares
+(
+  id INT PRIMARY KEY,
+  user_id INT,
+  share_date DATETIME,
+  article_id INT,
+  FOREIGN KEY (user_id) REFERENCES users (id)
+    ON UPDATE CASCADE
+    ON DELETE RESTRICT
 );
